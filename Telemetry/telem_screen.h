@@ -7,10 +7,13 @@
 #include "define.h"
 
 extern LCD screen;
-extern uint8_t internalStats[];
+extern uint16_t internalStats[];
 extern uint16_t powerStats[];
+extern uint32_t heartbeat_timeout[];
 
 void screen_prepare();
-void screen_update();
+void screen_update_stats();
+void screen_update_heartbeat();
+void screen_update_hb();
 
 #endif

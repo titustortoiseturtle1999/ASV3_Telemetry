@@ -45,25 +45,62 @@ void CAN_mask() {
 }
 
 // Receive CAN messages
-void CAN_receive_msg() {
+void CAN_read_msg() {
     if (CAN_MSGAVAIL == CAN.checkReceive()) {
     CAN.readMsgBufID(&id, &len, buf);    // read data,  len: data length, buf: data buf
     switch (CAN.getCanId()) {
-      case (CAN_HEARTBEAT): {
-        read_can_heartbeat(CAN.parseCANFrame(buf,0,1);
+      case CAN_HEARTBEAT: 
+        read_heartbeat();
         break;
-      }
-      case (CAN_BATT1_STATS): {
-        read_batt_stats(1, CAN.parseCANFrame(buf,0,5);
-      }
-      
+      case CAN_BATT1_STATS: 
+        read_batt_stats(1);       // 1 for batt 1 
+        break;
+      case CAN_BATT2_STATS: 
+        read_batt_stats(2);       // 2 for batt 2
+        break;
+      case CAN_SBC_TEMP:
+        internalStats[CPU_TEMP] = CAN.parseCANFrame(buf, 0, 1);
+      case CAN_POSB_STATS: 
+        read_posb_stats();
+      default: 
+        #ifdef DEBUG
+          Serial.println(CAN.getCanId());
+        #endif
+        break;
     }
+  }
 }
 
 // Byte 5: Temp (celsius), Byte 4-3: Current (0.1A), Byte 3-2: Voltage (0.01V), Byte 0: Capacity (%) 
-void read_batt_stats(int batt_no, uint64_t data) {
-  
+void read_batt_stats(int batt_no) {
+  switch (batt_no) {
+    case 1:
+      powerStats[BATT1_CAPACITY] = CAN.parseCANFrame(buf, 0, 1);
+      powerStats[BATT1_VOLTAGE] = CAN.parseCANFrame(buf, 1, 2);
+      powerStats[BATT1_CURRENT] = CAN.parseCANFrame(buf, 3, 2);
+      break;
+    case 2: 
+      powerStats[BATT2_CAPACITY] = CAN.parseCANFrame(buf, 0, 1);
+      powerStats[BATT2_VOLTAGE] = CAN.parseCANFrame(buf, 1, 2);
+      powerStats[BATT2_CURRENT] = CAN.parseCANFrame(buf, 3, 2);
+      break;
+    default: 
+      #ifdef DEBUG
+        Serial.println("Too many batteries");
+      #endif
+      break;
+  }
 }
 
 void read_heartbeat() {
+   uint8_t device = CAN.parseCANFrame(buf, 0, 1);
+   heartbeat_timeout[device] = millis();
+   // todo: add batt & esc hb
+}
+
+void read_posb_stats() {
+   internalStats[POSB_TEMP] = CAN.parseCANFrame(buf, 1, 0);
+   internalStats[HUMIDITY] = CAN.parseCANFrame(buf, 1, 1);
+   internalStats[INT_PRESS] = CAN.parseCANFrame(buf, 2, 2); 
+   internalStats[HULL_LEAK] = CAN.parseCANFrame(buf, 4, 1);
 }

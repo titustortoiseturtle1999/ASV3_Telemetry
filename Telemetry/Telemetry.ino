@@ -9,6 +9,7 @@
 //     \/    \/     \/     \/        
 //
 // Telemetry for BBASV 3.0
+//    Goals:
 //    Drive Telemetry LCD Display using data received over CAN
 //    Recieve Thruster, actuated hydrophone, and actuated thruster controls from Frsky. 
 //    Receive OCS control information from Controllink via serial.
@@ -16,8 +17,8 @@
 //    Determine state of control and send control signal to POSB accordingly. 
 //
 // Written by Titus Ng 
-// Change log v1.1:
-// Add units for stats
+// Change log v1.2:
+// Update screen and can files
 //
 //###################################################
 //###################################################
@@ -28,10 +29,12 @@
 #endif
 
 #include <Wire.h>
+#include <can.h>
 #include "Frisky_CPPM.h"
 #include "define.h"
 #include <Arduino.h>
-#include "telem_screen.h"       // own telem_screen library
+#include "telem_screen.h"       // telem_screen library
+#include "telem_can.h"
 
 // Create objects
 LCD screen = LCD(SCREEN_CS, SCREEN_RESET); 
@@ -44,7 +47,7 @@ uint8_t len = 0; //length of CAN message, taken care by library
 uint8_t buf[8];  //Buffer for CAN message
 
 // Stats
-uint8_t internalStats[INT_STAT_COUNT];
+uint16_t internalStats[INT_STAT_COUNT];
 uint16_t powerStats[POWER_STAT_COUNT];
 uint32_t heartbeat_timeout[HB_COUNT];
 
@@ -71,5 +74,5 @@ void setup() {
 }
 
 void loop() {
-  CAN_recieve_msg();
+  CAN_read_msg();
 }

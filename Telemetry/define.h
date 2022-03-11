@@ -15,7 +15,6 @@
 #define SCREEN_RESET 24
 #define OFFSET 40
 
-#define SCREEN_LOOP 1000
 
 //FRISKY
 #define RC_INT 19
@@ -35,7 +34,7 @@
 #define START_BYTE 0xFE
 
 //Internal stats
-#define INT_STAT_COUNT 6
+#define INT_STAT_COUNT 7
 
 #define INT_PRESS 0               // mbar 
 #define HUMIDITY 1                // RH %
@@ -43,6 +42,7 @@
 #define POSB_TEMP 3               // Degree Celsius
 #define RSSI_OCS 4                // 1db
 #define RSSI_RC 5                 // 1db
+#define HULL_LEAK 6               // 1 = leak, 0 = no leak 
 
 //Power stats
 #define POWER_STAT_COUNT 6
@@ -55,18 +55,32 @@
 #define BATT2_VOLTAGE 5 
 
 //Heartbeat
-#define HB_COUNT 13
-#define BATT1 9
-#define BATT2 10
-#define ESC1 11
-#define ESC2 12
+#define HB_COUNT 17               // HB array starts from index 1
+#define POSB 1
+#define POPB 2
+#define POKB 3
+#define TELEMETRY 4
+#define LARS 5
+#define SBC 6
+#define OCS 7
+#define FRKSY 8
+#define LOGICBACKPLANE 9
+#define BALLSHOOTER 10
+#define ACOUSTICS_MANI 11
+#define ACTUATED_THRUSTERS 12
+#define BATT1 13
+#define BATT2 14
+#define ESC1 15
+#define ESC2 16
 
 //TIMEOUTS
-#define HB_TIMEOUT 3000
+#define HB_TIMEOUT 2000
 #define HEARTBEAT_LOOP 500
 #define THRUSTER_TIMEOUT 100
 #define COMMLINK_TIMEOUT 4000
 #define FAILSAFE_TIMEOUT 3000
 #define STAT_TIMEOUT 2000
+#define SCREEN_LOOP 1000
+
 
 #endif // _DEFINES_H
