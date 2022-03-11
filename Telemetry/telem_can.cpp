@@ -45,7 +45,7 @@ void CAN_mask() {
 }
 
 // Receive CAN messages
-void checkCAN msg() {
+void CAN_receive_msg() {
     if (CAN_MSGAVAIL == CAN.checkReceive()) {
     CAN.readMsgBufID(&id, &len, buf);    // read data,  len: data length, buf: data buf
     switch (CAN.getCanId()) {
@@ -54,12 +54,16 @@ void checkCAN msg() {
         break;
       }
       case (CAN_BATT1_STATS): {
-        read_batt_stats   
+        read_batt_stats(1, CAN.parseCANFrame(buf,0,5);
       }
       
     }
 }
 
-void read_heartbeat() {
+// Byte 5: Temp (celsius), Byte 4-3: Current (0.1A), Byte 3-2: Voltage (0.01V), Byte 0: Capacity (%) 
+void read_batt_stats(int batt_no, uint64_t data) {
+  
 }
+
+void read_heartbeat() {
 }

@@ -9,7 +9,6 @@
 //     \/    \/     \/     \/        
 //
 // Telemetry for BBASV 3.0
-// Telemetry Firmware for ASV 2.0
 //    Drive Telemetry LCD Display using data received over CAN
 //    Recieve Thruster, actuated hydrophone, and actuated thruster controls from Frsky. 
 //    Receive OCS control information from Controllink via serial.
@@ -17,7 +16,8 @@
 //    Determine state of control and send control signal to POSB accordingly. 
 //
 // Written by Titus Ng 
-// Change log v0.0:
+// Change log v1.1:
+// Add units for stats
 //
 //###################################################
 //###################################################
@@ -66,8 +66,10 @@ void setup() {
   screen_prepare();
 
   // CAN init 
-    
+  CAN_init();
+  CAN_mask();
 }
 
 void loop() {
+  CAN_recieve_msg();
 }

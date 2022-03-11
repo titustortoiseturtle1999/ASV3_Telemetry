@@ -37,22 +37,22 @@
 //Internal stats
 #define INT_STAT_COUNT 6
 
-#define INT_PRESS 0
-#define HUMIDITY 1
-#define CPU_TEMP 2
-#define POSB_TEMP 3
-#define RSSI_OCS 4
-#define RSSI_RC 5
+#define INT_PRESS 0               // mbar 
+#define HUMIDITY 1                // RH %
+#define CPU_TEMP 2                // Degree Celsius
+#define POSB_TEMP 3               // Degree Celsius
+#define RSSI_OCS 4                // 1db
+#define RSSI_RC 5                 // 1db
 
 //Power stats
 #define POWER_STAT_COUNT 6
 
-#define BATT1_CAPACITY 0
+#define BATT1_CAPACITY 0          // %
 #define BATT2_CAPACITY 1
-#define BATT1_CURRENT 2
+#define BATT1_CURRENT 2           // 0.1A
 #define BATT2_CURRENT 3
-#define BATT1_VOLTAGE 4
-#define BATT2_VOLTAGE 5
+#define BATT1_VOLTAGE 4           // 0.01V
+#define BATT2_VOLTAGE 5 
 
 //Heartbeat
 #define HB_COUNT 13
@@ -68,13 +68,5 @@
 #define COMMLINK_TIMEOUT 4000
 #define FAILSAFE_TIMEOUT 3000
 #define STAT_TIMEOUT 2000
-
-//XBEE
-#define MAXSIZE 30
-#define KILL_SEND 0x416B976D
-#define KILL_RCV 0x416B9775
-#define OCS_EXT 0x416B969E
-#define ASV_EXT 0x416B9783
-#define SPARE1 0x416B96A3
 
 #endif // _DEFINES_H
