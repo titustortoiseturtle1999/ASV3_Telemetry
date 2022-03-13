@@ -40,14 +40,16 @@ void screen_prepare() {
 
 }
 
+// Display stats
 void screen_update_stats() {
   screen.set_cursor(150 + OFFSET, 0);
   for (int i = 0; i < INT_STAT_COUNT; i++)
   {
-    if (i = HULL_LEAK){ 
+    if (i == HULL_LEAK){ 
       internalStats[HULL_LEAK] ? screen.write_value_string("LEAK") : screen.write_value_string("NO LEAK");
-    }
-    else {
+    } else if (i == INT_PRESS) {
+      screen.write_value_with_dp(internalStats[i], 1);           // Display pressure kpa with 1dp
+    } else {
       screen.write_value_int(internalStats[i]);
     }
   }
@@ -55,10 +57,17 @@ void screen_update_stats() {
   screen.set_cursor(645 + OFFSET, 0);
   for (int i = 0; i < POWER_STAT_COUNT; i++)
   {
-    screen.write_value_int(powerStats[i]);
+    if (i == BATT1_CURRENT || i == BATT2_CURRENT) {
+      screen.write_value_with_dp(powerStats[i], 1);           // Display pressure as A with 1dp 
+    } else if (i == BATT1_VOLTAGE || i == BATT1_VOLTAGE) {
+      screen.write_value_with_dp(powerStats[i], 2);           // Display pressure as V with 1dp 
+    } else {
+      screen.write_value_int(powerStats[i]);
+    }
   }
 }
 
+// Display heartbeats
 void screen_update_hb() {
   int i; 
   screen.set_cursor(150 + OFFSET, 210);            // do right half
@@ -81,5 +90,69 @@ void screen_update_hb() {
       else
         screen.write_value_string("YES");
     }
+  }
+}
+
+//==========================================
+//          UPDATE DATA
+//==========================================
+uint32_t posb_timeout = millis();
+uint32_t ocs_timeout = millis();
+uint32_t frsky_timeout = millis();
+uint32_t sbc_timeout = millis();
+uint32_t batt1_timeout = millis();
+uint32_t batt2_timeout = millis();
+
+void screen_reset_stats() {
+  reset_posb_stats();
+  reset_ocs_stats();
+  reset_rc_stats();
+  reset_sbc_stats();
+  reset_batt1_stats();
+  reset_batt2_stats();
+}
+void reset_posb_stats() {
+  if ((millis() - posb_timeout) > STAT_TIMEOUT) {
+    internalStats[INT_PRESS] = 0xFFFF;
+    internalStats[HUMIDITY] = 0xFFFF;
+    internalStats[POSB_TEMP] = 0xFFFF;
+    posb_timeout = millis();
+  }
+}
+void reset_ocs_stats() {
+  if ((millis() - ocs_timeout) > STAT_TIMEOUT) {
+    internalStats[RSSI_OCS] = 0xFFFF;
+    ocs_timeout = millis();
+  }
+}
+void reset_rc_stats() {
+  frsky_timeout = frsky.get_last_int_time(); // rc_timeout is in micros
+  if ((micros() - frsky_timeout) > STAT_TIMEOUT * 1000) {
+    internalStats[RSSI_FRSKY] = 0xFFFF;
+    frsky.reset();
+    frsky_timeout = micros();
+  }
+}
+void reset_sbc_stats() {
+  if ((millis() - sbc_timeout) > STAT_TIMEOUT) {
+    internalStats[CPU_TEMP] = 0xFFFF;
+    sbc_timeout = millis();
+  }
+}
+void reset_batt1_stats()
+{
+  if ((millis() - batt1_timeout) > STAT_TIMEOUT) {
+    powerStats[BATT1_CAPACITY] = 0xFFFF;
+    powerStats[BATT1_CURRENT] = 0xFFFF;
+    powerStats[BATT1_VOLTAGE] = 0xFFFF;
+    batt1_timeout = millis();
+  }
+}
+void reset_batt2_stats() {
+  if ((millis() - batt2_timeout) > STAT_TIMEOUT) {
+    powerStats[BATT2_CAPACITY] = 0xFFFF;
+    powerStats[BATT2_CURRENT] = 0xFFFF;
+    powerStats[BATT2_VOLTAGE] = 0xFFFF;
+    batt2_timeout = millis();
   }
 }

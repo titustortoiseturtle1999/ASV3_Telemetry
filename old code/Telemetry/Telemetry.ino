@@ -810,7 +810,7 @@ void checkCANmsg() {
 		case CAN_remote_kill_stats:
 		case CAN_heartbeat:
 		case CAN_e_stop:
-		case CAN_wind_speed:
+//		case CAN_wind_speed:
 		case CAN_battery1_stats:
 		case CAN_battery2_stats:
 		case CAN_esc1_motor_stats:

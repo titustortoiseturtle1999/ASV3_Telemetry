@@ -15,7 +15,7 @@ void CAN_init() {
 		Serial.println("CAN init fail");
 		Serial.println("Init CAN again");
 		delay(100);
-        CAN_init();
+    CAN_init();
 	}
 }
 
@@ -95,7 +95,6 @@ void read_batt_stats(int batt_no) {
 void read_heartbeat() {
    uint8_t device = CAN.parseCANFrame(buf, 0, 1);
    heartbeat_timeout[device] = millis();
-   // todo: add batt & esc hb
 }
 
 void read_posb_stats() {
@@ -103,4 +102,17 @@ void read_posb_stats() {
    internalStats[HUMIDITY] = CAN.parseCANFrame(buf, 1, 1);
    internalStats[INT_PRESS] = CAN.parseCANFrame(buf, 2, 2); 
    internalStats[HULL_LEAK] = CAN.parseCANFrame(buf, 4, 1);
+}
+
+void CAN_publish_hb(int hb) {
+  buf[0] = hb;
+  CAN.sendMsgBuf(CAN_HEARTBEAT, 0, 1, buf);
+}
+
+void CAN_publish_controllink() {
+  len = 3;
+  buf[0] = control_mode;
+  buf[1] = internalStats[RSSI_FRSKY];
+  buf[2] = internalStats[RSSI_OCS];
+  CAN.sendMsgBuf(CAN_CONTROL_LINK, 0, len, buf);
 }
